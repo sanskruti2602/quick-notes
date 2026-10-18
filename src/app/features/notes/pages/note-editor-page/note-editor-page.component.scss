@@ -1,0 +1,56 @@
+@use '../../../../../styles/core' as *;
+
+:host {
+  display: block;
+}
+
+.editor-page {
+  display: grid;
+  gap: space(4);
+  max-width: 880px;
+  margin: 0 auto;
+
+  &__bar {
+    display: flex;
+    align-items: center;
+    gap: space(2);
+  }
+
+  &__title {
+    flex: 1;
+    min-width: 0;
+    font-size: font-size(lg);
+    font-weight: font-weight(semibold);
+  }
+
+  &__actions {
+    display: flex;
+    gap: space(1);
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: space(2) space(6);
+    margin: 0;
+    color: var(--qn-text-subtle);
+    font-size: font-size(xs);
+
+    div {
+      display: flex;
+      gap: space(1);
+    }
+
+    dt {
+      font-weight: font-weight(semibold);
+
+      &::after {
+        content: ':';
+      }
+    }
+
+    dd {
+      margin: 0;
+    }
+  }
+}

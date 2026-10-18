@@ -1,0 +1,99 @@
+<section class="editor-page" aria-labelledby="editor-page-title">
+  <header class="editor-page__bar">
+    <a class="icon-btn" [routerLink]="backUrl" qnTooltip="Back" tooltipLabel="Back to notes" tooltipPosition="bottom">
+      <qn-icon name="back" [size]="20" />
+    </a>
+    <h1 id="editor-page-title" class="editor-page__title">{{ pageTitle() }}</h1>
+
+    @if (note(); as current) {
+      <div class="editor-page__actions">
+        @if (!current.isDeleted) {
+          @if (current.isArchived) {
+            <button type="button" class="icon-btn" qnTooltip="Unarchive" tooltipPosition="bottom" (click)="runCommand('unarchive')">
+              <qn-icon name="archive-restore" [size]="18" />
+            </button>
+          } @else {
+            <button type="button" class="icon-btn" qnTooltip="Archive" tooltipPosition="bottom" (click)="runCommand('archive')">
+              <qn-icon name="archive" [size]="18" />
+            </button>
+          }
+          <button type="button" class="icon-btn" qnTooltip="Move to Trash" tooltipPosition="bottom" (click)="runCommand('trash')">
+            <qn-icon name="trash" [size]="18" />
+          </button>
+        }
+      </div>
+    }
+  </header>
+
+  @if (notFound()) {
+    <qn-empty-state
+      icon="search-x"
+      heading="Note not found"
+      message="It may have been permanently deleted, or the link is incorrect."
+    >
+      <a class="btn btn--primary" routerLink="/notes">Back to all notes</a>
+    </qn-empty-state>
+  } @else {
+    @if (note(); as current) {
+      @if (current.isDeleted) {
+        <div class="banner banner--danger" role="status">
+          <qn-icon name="trash" [size]="18" />
+          <div class="banner__body">
+            <strong>This note is in Trash.</strong>
+            <span>Notes in Trash are read-only. Restore it to make changes.</span>
+          </div>
+          <div class="banner__actions">
+            <button type="button" class="btn btn--sm" (click)="runCommand('restore')">
+              <qn-icon name="restore" [size]="14" />
+              Restore
+            </button>
+            <button type="button" class="btn btn--sm btn--danger" (click)="runCommand('delete-forever')">
+              Delete forever
+            </button>
+          </div>
+        </div>
+      } @else if (current.isArchived) {
+        <div class="banner" role="status">
+          <qn-icon name="archive" [size]="18" />
+          <div class="banner__body">
+            <strong>This note is archived.</strong>
+            <span>It won’t appear in All Notes or search until you unarchive it.</span>
+          </div>
+        </div>
+      }
+    }
+
+    <qn-note-editor
+      [initialDraft]="initialDraft()"
+      [savedDraft]="savedDraft()"
+      [readOnly]="readOnly()"
+      [canPin]="canPin()"
+      [saveStatus]="saveStatus()"
+      [lastSavedAt]="lastSavedAt()"
+      [tagSuggestions]="tagSuggestions()"
+      [autofocusTitle]="isNew()"
+      (draftChange)="onDraftChange($event)"
+      (save)="onSave($event)"
+      (cancel)="onCancel()"
+    />
+
+    @if (note(); as current) {
+      <dl class="editor-page__meta">
+        <div>
+          <dt>Created</dt>
+          <dd><time [attr.datetime]="current.createdAt">{{ current.createdAt | noteDate: 'full' }}</time></dd>
+        </div>
+        <div>
+          <dt>Last updated</dt>
+          <dd><time [attr.datetime]="current.updatedAt">{{ current.updatedAt | noteDate: 'full' }}</time></dd>
+        </div>
+        @if (current.deletedAt) {
+          <div>
+            <dt>Moved to Trash</dt>
+            <dd><time [attr.datetime]="current.deletedAt">{{ current.deletedAt | noteDate: 'full' }}</time></dd>
+          </div>
+        }
+      </dl>
+    }
+  }
+</section>
