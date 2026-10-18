@@ -1,0 +1,170 @@
+<form class="editor" [formGroup]="form" (ngSubmit)="requestSave()" novalidate>
+  <div class="editor__surface" [attr.data-color]="draft().color">
+    <div class="editor__field">
+      <label for="note-title" class="sr-only">Title</label>
+      <input
+        #titleInput
+        id="note-title"
+        class="editor__title"
+        type="text"
+        formControlName="title"
+        placeholder="Title (optional)"
+        autocomplete="off"
+        [attr.aria-invalid]="showTitleError() || showEmptyError()"
+        [attr.aria-describedby]="'note-title-count' + (showTitleError() ? ' note-title-error' : '') + (showEmptyError() ? ' note-empty-error' : '')"
+      />
+      <span id="note-title-count" class="editor__count" [class.editor__count--over]="showTitleError()">
+        <span class="sr-only">Title length:</span> {{ titleLength() }}/{{ limits.titleMaxLength }}
+      </span>
+      @if (showTitleError()) {
+        <p id="note-title-error" class="field__error">
+          <qn-icon name="circle-alert" [size]="14" />
+          Title must be {{ limits.titleMaxLength }} characters or fewer.
+        </p>
+      }
+    </div>
+
+    <div class="editor__field editor__field--grow">
+      <label for="note-content" class="sr-only">Note content</label>
+      <textarea
+        #contentInput
+        id="note-content"
+        class="editor__content"
+        formControlName="content"
+        placeholder="Start writing…"
+        rows="12"
+        [attr.aria-invalid]="showContentError() || showEmptyError()"
+        [attr.aria-describedby]="'note-content-count' + (showContentError() ? ' note-content-error' : '') + (showEmptyError() ? ' note-empty-error' : '')"
+      ></textarea>
+      @if (showContentError()) {
+        <p id="note-content-error" class="field__error">
+          <qn-icon name="circle-alert" [size]="14" />
+          Content must be {{ limits.contentMaxLength.toLocaleString() }} characters or fewer. Remove
+          {{ (contentLength() - limits.contentMaxLength).toLocaleString() }} characters to save.
+        </p>
+      }
+    </div>
+
+    @if (showEmptyError()) {
+      <p id="note-empty-error" class="field__error editor__empty-error" role="alert">
+        <qn-icon name="circle-alert" [size]="14" />
+        Add a title or some content before saving.
+      </p>
+    }
+
+    <div class="editor__tags">
+      <span class="editor__tags-label" id="note-tags-label">Tags</span>
+      <ul class="editor__tag-list" role="list" aria-labelledby="note-tags-label">
+        @for (tag of draft().tags; track tag) {
+          <li class="chip chip--accent">
+            <span class="chip__label">#{{ tag }}</span>
+            @if (!readOnly()) {
+              <button
+                type="button"
+                class="editor__tag-remove"
+                [attr.aria-label]="'Remove tag ' + tag"
+                (click)="removeTag(tag)"
+              >
+                <qn-icon name="close" [size]="12" />
+              </button>
+            }
+          </li>
+        } @empty {
+          @if (readOnly()) {
+            <li class="editor__no-tags">No tags</li>
+          }
+        }
+      </ul>
+      @if (!readOnly()) {
+        <label for="note-tag-input" class="sr-only">Add tag</label>
+        <input
+          id="note-tag-input"
+          class="editor__tag-input"
+          type="text"
+          list="note-tag-suggestions"
+          autocomplete="off"
+          [formControl]="tagInput"
+          [placeholder]="atTagLimit() ? 'Tag limit reached' : 'Add a tag and press Enter'"
+          [attr.aria-describedby]="tagMessage() ? 'note-tag-message' : null"
+          (keydown)="onTagKeydown($event)"
+          (blur)="commitPendingTags()"
+        />
+        <datalist id="note-tag-suggestions">
+          @for (tag of availableSuggestions(); track tag) {
+            <option [value]="tag"></option>
+          }
+        </datalist>
+      }
+    </div>
+    @if (tagMessage(); as message) {
+      <p id="note-tag-message" class="field__hint editor__tag-message" role="status">{{ message }}</p>
+    }
+  </div>
+
+  <div class="editor__options">
+    <fieldset class="editor__colors">
+      <legend class="editor__options-label">Colour</legend>
+      <div class="editor__swatches">
+        @for (color of colors; track color) {
+          <label class="editor__swatch" [attr.data-color]="color" [qnTooltip]="colorLabels[color]" tooltipPosition="bottom" tooltipLabel="">
+            <input type="radio" formControlName="color" [value]="color" />
+            <span class="sr-only">{{ colorLabels[color] }}</span>
+          </label>
+        }
+      </div>
+    </fieldset>
+
+    <div class="editor__pin">
+      <label class="switch">
+        <input type="checkbox" formControlName="isPinned" [attr.aria-describedby]="canPin() ? null : 'note-pin-hint'" />
+        Pin to top
+      </label>
+      @if (!canPin()) {
+        <span id="note-pin-hint" class="field__hint">Archived notes can’t be pinned.</span>
+      }
+    </div>
+  </div>
+
+  <footer class="editor__footer">
+    <div class="editor__status" role="status" aria-live="polite">
+      @switch (saveStatus()) {
+        @case ('saving') {
+          <span class="editor__status-dot editor__status-dot--pending" aria-hidden="true"></span> Saving…
+        }
+        @case ('unsaved') {
+          <span class="editor__status-dot editor__status-dot--pending" aria-hidden="true"></span> Unsaved changes
+        }
+        @case ('saved') {
+          <qn-icon name="check" [size]="14" />
+          Saved
+          @if (lastSavedAt(); as savedAt) {
+            <span class="editor__status-time">{{ savedAt | noteDate }}</span>
+          }
+        }
+        @case ('error') {
+          <qn-icon name="warning" [size]="14" />
+          Not saved to browser storage
+        }
+      }
+    </div>
+
+    <span
+      id="note-content-count"
+      class="editor__count"
+      [class.editor__count--warn]="contentNearLimit()"
+      [class.editor__count--over]="showContentError()"
+    >
+      {{ contentLength().toLocaleString() }} / {{ limits.contentMaxLength.toLocaleString() }} characters
+    </span>
+
+    @if (!readOnly()) {
+      <div class="editor__buttons">
+        <button type="button" class="btn btn--ghost" (click)="cancel.emit()">Cancel</button>
+        <button type="submit" class="btn btn--primary" qnTooltip="Save (Ctrl+S / ⌘S)" tooltipLabel="">
+          <qn-icon name="save" [size]="16" />
+          Save
+        </button>
+      </div>
+    }
+  </footer>
+</form>
