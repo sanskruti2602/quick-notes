@@ -1,0 +1,25 @@
+<div class="toasts">
+  @for (region of regions(); track region.role) {
+    <div class="toasts__region" [attr.role]="region.role" [attr.aria-live]="region.live">
+      @for (toast of region.toasts; track toast.id) {
+        <div class="toast" [class]="'toast--' + toast.kind">
+          <qn-icon class="toast__icon" [name]="icons[toast.kind]" [size]="18" />
+          <p class="toast__message">{{ toast.message }}</p>
+          @if (toast.action; as action) {
+            <button type="button" class="toast__action" (click)="notifier.runAction(toast.id)">
+              {{ action.label }}
+            </button>
+          }
+          <button
+            type="button"
+            class="icon-btn icon-btn--sm toast__close"
+            aria-label="Dismiss notification"
+            (click)="notifier.dismiss(toast.id)"
+          >
+            <qn-icon name="close" [size]="16" />
+          </button>
+        </div>
+      }
+    </div>
+  }
+</div>
