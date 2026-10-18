@@ -1,0 +1,59 @@
+@use '../styles/core' as *;
+
+:host {
+  display: block;
+}
+
+.shell {
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  @include respond-above(md) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  &__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: z(backdrop);
+    background: var(--qn-overlay);
+    animation: fade-in duration(base) $easing-standard;
+  }
+
+  &__main {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__notice {
+    margin: space(3) space(3) 0;
+
+    @include respond-above(md) {
+      margin: space(4) space(6) 0;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    width: 100%;
+    max-width: $content-max-width;
+    margin: 0 auto;
+    padding: space(4) space(3) space(16);
+
+    @include respond-above(md) {
+      padding: space(6) space(6) space(16);
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}

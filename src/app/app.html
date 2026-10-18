@@ -1,0 +1,41 @@
+<a class="skip-link" href="#main-content">Skip to content</a>
+
+<div class="shell">
+  <qn-sidebar />
+
+  @if (layout.isMobile() && layout.mobileNavOpen()) {
+    <div class="shell__backdrop" aria-hidden="true" (click)="layout.closeMobileNav()"></div>
+  }
+
+  <div class="shell__main" [attr.inert]="layout.isMobile() && layout.mobileNavOpen() ? '' : null">
+    <qn-header />
+
+    @if (!state.isPersistent) {
+      <div class="shell__notice banner banner--warning" role="status">
+        <qn-icon name="warning" [size]="18" />
+        <div class="banner__body">
+          <strong>Browser storage is unavailable.</strong>
+          <span>Notes will be lost when this tab closes. Check that cookies and site data are allowed, or export your notes from Settings.</span>
+        </div>
+      </div>
+    } @else if (state.persistError()) {
+      <div class="shell__notice banner banner--danger" role="status">
+        <qn-icon name="warning" [size]="18" />
+        <div class="banner__body">
+          <strong>Changes aren’t being saved to this browser.</strong>
+          <span>
+            {{ state.persistError() === 'quota' ? 'Storage is full.' : 'Saving failed.' }}
+            Your edits are kept in this tab — export your notes from Settings to keep a copy.
+          </span>
+        </div>
+      </div>
+    }
+
+    <main id="main-content" class="shell__content" tabindex="-1">
+      <router-outlet />
+    </main>
+  </div>
+</div>
+
+<qn-toast-container />
+<qn-confirm-dialog />
