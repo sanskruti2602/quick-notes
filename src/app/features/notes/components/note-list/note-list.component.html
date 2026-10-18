@@ -1,0 +1,19 @@
+@for (section of sections(); track section.id) {
+  @if (section.notes.length > 0) {
+    <section class="note-list__section" [attr.aria-labelledby]="section.heading ? 'section-' + section.id : null">
+      @if (section.heading) {
+        <h2 class="note-list__heading" [id]="'section-' + section.id">
+          {{ section.heading }}
+          <span class="badge">{{ section.notes.length }}</span>
+        </h2>
+      }
+      <ul class="note-list__items" role="list">
+        @for (note of section.notes; track note.id) {
+          <li class="note-list__item">
+            <qn-note-card [note]="note" (command)="command.emit($event)" />
+          </li>
+        }
+      </ul>
+    </section>
+  }
+}
