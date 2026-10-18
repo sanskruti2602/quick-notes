@@ -1,0 +1,31 @@
+<section class="page" aria-labelledby="tags-title">
+  <header class="page__header">
+    <h1 id="tags-title" class="page__title">Tags</h1>
+    <p class="page__description">Browse notes by tag. Add tags to a note from the editor.</p>
+  </header>
+
+  @if (state.tags().length === 0) {
+    <qn-empty-state
+      icon="tags"
+      heading="No tags yet"
+      message="Tags help you group related notes. Type a tag in the editor and press Enter to add it."
+    >
+      <a class="btn btn--primary" routerLink="/notes/new">
+        <qn-icon name="plus" [size]="16" />
+        Create a note
+      </a>
+    </qn-empty-state>
+  } @else {
+    <ul class="tags" role="list">
+      @for (tag of state.tags(); track tag.name) {
+        <li>
+          <a class="tags__item" [routerLink]="['/tags', tag.name]">
+            <qn-icon name="tag" [size]="16" />
+            <span class="tags__name">{{ tag.name }}</span>
+            <span class="badge" [attr.aria-label]="tag.count + (tag.count === 1 ? ' note' : ' notes')">{{ tag.count }}</span>
+          </a>
+        </li>
+      }
+    </ul>
+  }
+</section>

@@ -1,0 +1,53 @@
+@use '../../../../../styles/core' as *;
+
+.page {
+  display: grid;
+  gap: space(6);
+
+  &__header {
+    display: grid;
+    gap: space(1);
+  }
+
+  &__title {
+    font-size: font-size(2xl);
+    font-weight: font-weight(bold);
+  }
+
+  &__description {
+    color: var(--qn-text-muted);
+    font-size: font-size(sm);
+  }
+}
+
+.tags {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: space(3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &__item {
+    @include surface(sm);
+    @include transition(border-color, box-shadow);
+    display: flex;
+    align-items: center;
+    gap: space(3);
+    min-height: $touch-target + 8px;
+    padding: space(3) space(4);
+    color: var(--qn-text);
+    text-decoration: none;
+
+    &:hover {
+      border-color: var(--qn-accent);
+      box-shadow: var(--qn-shadow-md);
+    }
+  }
+
+  &__name {
+    @include truncate;
+    flex: 1;
+    font-weight: font-weight(medium);
+  }
+}
