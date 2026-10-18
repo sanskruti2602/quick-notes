@@ -1,0 +1,111 @@
+<section class="settings" aria-labelledby="settings-title">
+  <header class="settings__header">
+    <h1 id="settings-title" class="settings__title">Settings</h1>
+    <p class="settings__description">Preferences are saved in this browser.</p>
+  </header>
+
+  <section class="settings__card" aria-labelledby="appearance-title">
+    <h2 id="appearance-title" class="settings__card-title">Appearance</h2>
+
+    <fieldset class="settings__row">
+      <legend class="settings__label">Theme</legend>
+      <div class="segmented">
+        @for (option of themeOptions; track option.value) {
+          <label>
+            <input
+              type="radio"
+              name="theme"
+              [value]="option.value"
+              [checked]="settings.theme() === option.value"
+              (change)="setTheme(option.value)"
+            />
+            <qn-icon [name]="option.icon" [size]="16" />
+            {{ option.label }}
+          </label>
+        }
+      </div>
+    </fieldset>
+
+    <fieldset class="settings__row">
+      <legend class="settings__label">Note layout</legend>
+      <div class="segmented">
+        <label>
+          <input type="radio" name="layout" value="grid" [checked]="settings.layout() === 'grid'" (change)="setLayout('grid')" />
+          <qn-icon name="grid" [size]="16" />
+          Grid
+        </label>
+        <label>
+          <input type="radio" name="layout" value="list" [checked]="settings.layout() === 'list'" (change)="setLayout('list')" />
+          <qn-icon name="list" [size]="16" />
+          List
+        </label>
+      </div>
+    </fieldset>
+
+    <div class="settings__row">
+      <label class="settings__label" for="default-sort">Sort notes by</label>
+      <select id="default-sort" class="select settings__select" (change)="onSortChange($event)">
+        @for (option of sorts; track option) {
+          <option [value]="option" [selected]="settings.sort() === option">{{ sortLabels[option] }}</option>
+        }
+      </select>
+    </div>
+  </section>
+
+  <section class="settings__card" aria-labelledby="editor-title">
+    <h2 id="editor-title" class="settings__card-title">Editor</h2>
+    <div class="settings__row">
+      <div class="settings__text">
+        <span class="settings__label" id="autosave-label">Autosave</span>
+        <span class="field__hint" id="autosave-hint">
+          Save changes automatically while you type. When off, use Save or Ctrl+S / ⌘S.
+        </span>
+      </div>
+      <label class="switch">
+        <input
+          type="checkbox"
+          aria-labelledby="autosave-label"
+          aria-describedby="autosave-hint"
+          [checked]="settings.autosave()"
+          (change)="onAutosaveChange($event)"
+        />
+        <span aria-hidden="true">{{ settings.autosave() ? 'On' : 'Off' }}</span>
+      </label>
+    </div>
+  </section>
+
+  <section class="settings__card" aria-labelledby="data-title">
+    <h2 id="data-title" class="settings__card-title">Your data</h2>
+
+    <div class="banner" [class.banner--warning]="!state.isPersistent || state.persistError()">
+      <qn-icon [name]="!state.isPersistent || state.persistError() ? 'warning' : 'info'" [size]="18" />
+      <div class="banner__body">
+        <span>{{ storageLabel() }}</span>
+        <span class="field__hint">
+          {{ state.counts().all }} active · {{ state.counts().archived }} archived · {{ state.counts().trash }} in Trash
+        </span>
+      </div>
+      @if (state.persistError()) {
+        <div class="banner__actions">
+          <button type="button" class="btn btn--sm" (click)="retrySave()">Try again</button>
+        </div>
+      }
+    </div>
+
+    <div class="settings__actions">
+      <button type="button" class="btn" (click)="exportNotes()">
+        <qn-icon name="download" [size]="16" />
+        Export notes
+      </button>
+      <label class="btn settings__import">
+        <qn-icon name="upload" [size]="16" />
+        Import notes
+        <input class="sr-only" type="file" accept="application/json,.json" (change)="importNotes($event)" />
+      </label>
+      <button type="button" class="btn btn--danger-ghost" (click)="deleteAll()">
+        <qn-icon name="trash" [size]="16" />
+        Delete all notes
+      </button>
+    </div>
+  </section>
+</section>

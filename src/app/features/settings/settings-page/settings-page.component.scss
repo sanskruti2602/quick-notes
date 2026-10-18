@@ -1,0 +1,82 @@
+@use '../../../../styles/core' as *;
+
+.settings {
+  display: grid;
+  gap: space(6);
+  max-width: 760px;
+
+  &__header {
+    display: grid;
+    gap: space(1);
+  }
+
+  &__title {
+    font-size: font-size(2xl);
+    font-weight: font-weight(bold);
+  }
+
+  &__description {
+    color: var(--qn-text-muted);
+    font-size: font-size(sm);
+  }
+
+  &__card {
+    @include surface(sm);
+    display: grid;
+    gap: space(5);
+    padding: space(5);
+
+    @include respond-above(md) {
+      padding: space(6);
+    }
+  }
+
+  &__card-title {
+    font-size: font-size(lg);
+    font-weight: font-weight(semibold);
+  }
+
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: space(3);
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+    legend {
+      float: left;
+      padding: 0;
+    }
+  }
+
+  &__text {
+    display: grid;
+    gap: space(1);
+    max-width: 460px;
+  }
+
+  &__label {
+    font-size: font-size(sm);
+    font-weight: font-weight(semibold);
+  }
+
+  &__select {
+    width: auto;
+    min-width: 200px;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: space(2);
+  }
+
+  &__import {
+    &:focus-within {
+      @include focus-ring;
+    }
+  }
+}
