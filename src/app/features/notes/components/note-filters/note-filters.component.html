@@ -1,0 +1,54 @@
+<div class="filters" role="group" aria-label="Filter and sort notes">
+  @if (showTagFilter() && tags().length > 0) {
+    <label class="filters__field">
+      <span class="filters__label">Tag</span>
+      <select class="select filters__select" (change)="onTagChange($event)">
+        <option value="" [selected]="selectedTag() === null">All tags</option>
+        @for (tag of tags(); track tag.name) {
+          <option [value]="tag.name" [selected]="selectedTag() === tag.name">
+            #{{ tag.name }} ({{ tag.count }})
+          </option>
+        }
+      </select>
+    </label>
+  }
+
+  <label class="filters__field">
+    <span class="filters__label">Sort</span>
+    <select class="select filters__select" (change)="onSortChange($event)">
+      @for (option of sorts; track option) {
+        <option [value]="option" [selected]="sort() === option">{{ sortLabels[option] }}</option>
+      }
+    </select>
+  </label>
+
+  @if (showPinnedFilter()) {
+    <label class="switch filters__switch">
+      <input type="checkbox" [checked]="pinnedOnly()" (change)="onPinnedChange($event)" />
+      Pinned only
+    </label>
+  }
+
+  <div class="filters__spacer"></div>
+
+  @if (hasActiveFilters()) {
+    <button type="button" class="btn btn--ghost btn--sm" (click)="clearFilters.emit()">
+      <qn-icon name="close" [size]="14" />
+      Clear filters
+    </button>
+  }
+
+  <fieldset class="segmented filters__layout">
+    <legend class="sr-only">Layout</legend>
+    <label>
+      <input type="radio" name="note-layout" value="grid" [checked]="layout() === 'grid'" (change)="layout.set('grid')" />
+      <qn-icon name="grid" [size]="16" />
+      <span class="sr-only">Grid</span>
+    </label>
+    <label>
+      <input type="radio" name="note-layout" value="list" [checked]="layout() === 'list'" (change)="layout.set('list')" />
+      <qn-icon name="list" [size]="16" />
+      <span class="sr-only">List</span>
+    </label>
+  </fieldset>
+</div>
