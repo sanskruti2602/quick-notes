@@ -1,0 +1,65 @@
+<article
+  class="note-card"
+  [class.note-card--pinned]="note().isPinned"
+  [class.note-card--colored]="note().color !== 'default'"
+  [attr.data-color]="note().color"
+  [attr.aria-labelledby]="titleId()"
+>
+  <header class="note-card__header">
+    <h3 class="note-card__title" [id]="titleId()" [class.note-card__title--untitled]="isUntitled()">
+      <a class="note-card__link" [routerLink]="['/notes', note().id]">{{ title() }}</a>
+    </h3>
+    <div class="note-card__actions">
+      @if (canPin()) {
+        <button
+          type="button"
+          class="icon-btn icon-btn--sm note-card__pin"
+          [class.note-card__pin--active]="note().isPinned"
+          [qnTooltip]="note().isPinned ? 'Unpin note' : 'Pin note'"
+          (click)="togglePin()"
+        >
+          <qn-icon [name]="note().isPinned ? 'pin-off' : 'pin'" [size]="16" />
+        </button>
+      }
+      <qn-action-menu
+        [items]="menuItems()"
+        [label]="'More actions for ' + title()"
+        (selected)="onMenuSelect($event)"
+      />
+    </div>
+  </header>
+
+  @if (preview()) {
+    <p class="note-card__preview">{{ preview() }}</p>
+  } @else {
+    <p class="note-card__preview note-card__preview--empty">No content</p>
+  }
+
+  <footer class="note-card__footer">
+    @if (note().tags.length > 0) {
+      <ul class="note-card__tags" role="list" aria-label="Tags">
+        @for (tag of visibleTags(); track tag) {
+          <li class="chip"><span class="chip__label">#{{ tag }}</span></li>
+        }
+        @if (hiddenTagCount() > 0) {
+          <li class="chip" [attr.aria-label]="hiddenTagCount() + ' more tags'">+{{ hiddenTagCount() }}</li>
+        }
+      </ul>
+    }
+    <div class="note-card__meta">
+      @if (colorLabel(); as label) {
+        <span class="note-card__swatch" aria-hidden="true"></span>
+        <span class="sr-only">{{ label }} label.</span>
+      }
+      @if (note().isDeleted && note().deletedAt) {
+        <time [attr.datetime]="note().deletedAt" [title]="note().deletedAt | noteDate: 'full'">
+          Deleted {{ note().deletedAt | noteDate }}
+        </time>
+      } @else {
+        <time [attr.datetime]="note().updatedAt" [title]="note().updatedAt | noteDate: 'full'">
+          Edited {{ note().updatedAt | noteDate }}
+        </time>
+      }
+    </div>
+  </footer>
+</article>

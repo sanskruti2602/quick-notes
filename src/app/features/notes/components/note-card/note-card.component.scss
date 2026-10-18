@@ -1,0 +1,174 @@
+@use '../../../../../styles/core' as *;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.note-card {
+  @include surface(sm);
+  @include transition(box-shadow, border-color, transform);
+  --card-bg: var(--qn-surface);
+  --card-border: var(--qn-border);
+  --card-dot: transparent;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: space(3);
+  height: 100%;
+  padding: space(4);
+  border-color: var(--card-border);
+  background: var(--card-bg);
+
+  @each $color in $note-color-names {
+    &[data-color='#{$color}'] {
+      --card-bg: var(--qn-note-#{$color}-bg);
+      --card-border: var(--qn-note-#{$color}-border);
+      --card-dot: var(--qn-note-#{$color}-dot);
+    }
+  }
+
+  &:hover {
+    box-shadow: var(--qn-shadow-md);
+    border-color: var(--qn-border-strong);
+  }
+
+  &--colored:hover {
+    border-color: var(--card-dot);
+  }
+
+  &:has(.note-card__link:focus-visible) {
+    @include focus-ring;
+  }
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    gap: space(2);
+  }
+
+  &__title {
+    flex: 1;
+    min-width: 0;
+    padding-top: space(1);
+    font-size: font-size(md);
+    font-weight: font-weight(semibold);
+    overflow-wrap: anywhere;
+
+    &--untitled {
+      color: var(--qn-text-muted);
+      font-style: italic;
+      font-weight: font-weight(medium);
+    }
+  }
+
+  &__link {
+    @include line-clamp(2);
+    color: inherit;
+    text-decoration: none;
+
+    &:focus-visible {
+      outline: none;
+    }
+
+    // Stretch the link over the whole card so the card is clickable, while buttons stay on top.
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+    }
+  }
+
+  &__actions {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: space(1);
+    margin: calc(#{space(1)} * -1) calc(#{space(2)} * -1) 0 0;
+
+    // Lift the open menu above this card's tags and neighbouring cards.
+    &:has([role='menu']) {
+      z-index: z(menu);
+    }
+  }
+
+  &__pin {
+    opacity: 0;
+
+    &--active {
+      color: var(--qn-accent);
+      opacity: 1;
+    }
+
+    &:focus-visible {
+      opacity: 1;
+    }
+
+    @media (hover: none) {
+      opacity: 1;
+    }
+  }
+
+  &:hover &__pin,
+  &:focus-within &__pin {
+    opacity: 1;
+  }
+
+  &__preview {
+    @include line-clamp(8);
+    flex: 1;
+    color: var(--qn-text-muted);
+    font-size: font-size(sm);
+    line-height: line-height(relaxed);
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+
+    &--empty {
+      font-style: italic;
+      color: var(--qn-text-subtle);
+    }
+  }
+
+  &__footer {
+    display: grid;
+    gap: space(2);
+  }
+
+  &__tags {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: space(1);
+    min-width: 0;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: space(2);
+    color: var(--qn-text-subtle);
+    font-size: font-size(xs);
+  }
+
+  &__swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--card-dot);
+  }
+}
+
+// Compact horizontal presentation for the list layout (set by the parent list).
+:host-context(.note-list--list) {
+  .note-card {
+    gap: space(2);
+  }
+
+  .note-card__preview {
+    @include line-clamp(2);
+  }
+}
