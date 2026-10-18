@@ -26,3 +26,8 @@ ng build             # production build into dist/quick-notes
 ```
 
 If the Angular CLI is not installed globally, prefix commands with `npx` (for example `npx ng serve`) or use the npm scripts: `npm start`, `npm test`, `npm run build`. For a single headless test run (CI): `npm run test:ci`.
+
+
+https://github.com/user-attachments/assets/48c630dc-bee7-462a-bb5a-d89421f275e7
+
+
