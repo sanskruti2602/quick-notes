@@ -1,0 +1,32 @@
+<button
+  #trigger
+  type="button"
+  class="icon-btn icon-btn--sm"
+  aria-haspopup="menu"
+  [attr.aria-expanded]="open()"
+  [attr.aria-controls]="open() ? menuId : null"
+  [attr.aria-label]="label()"
+  (click)="toggle()"
+  (keydown)="onTriggerKeydown($event)"
+>
+  <qn-icon name="more" [size]="18" />
+</button>
+
+@if (open()) {
+  <div [id]="menuId" class="menu" role="menu" [attr.aria-label]="label()" (keydown)="onMenuKeydown($event)">
+    @for (item of items(); track item.id) {
+      <button
+        #menuItem
+        type="button"
+        role="menuitem"
+        tabindex="-1"
+        class="menu__item"
+        [class.menu__item--danger]="item.danger"
+        (click)="select(item)"
+      >
+        <qn-icon [name]="item.icon" [size]="16" />
+        <span>{{ item.label }}</span>
+      </button>
+    }
+  </div>
+}

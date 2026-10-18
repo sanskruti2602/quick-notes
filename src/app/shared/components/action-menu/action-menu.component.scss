@@ -1,0 +1,67 @@
+@use '../../../../styles/core' as *;
+
+:host {
+  position: relative;
+  display: inline-flex;
+}
+
+.menu {
+  @include popover-surface;
+  position: absolute;
+  top: calc(100% + #{space(1)});
+  right: 0;
+  z-index: z(menu);
+  display: grid;
+  min-width: 200px;
+  padding: space(1);
+  animation: menu-in duration(fast) $easing-standard;
+
+  &__item {
+    @include button-reset;
+    display: flex;
+    align-items: center;
+    gap: space(3);
+    width: 100%;
+    min-height: 38px;
+    padding: 0 space(3);
+    border-radius: radius(sm);
+    color: var(--qn-text);
+    font-size: font-size(sm);
+    text-align: left;
+
+    &:hover,
+    &:focus-visible {
+      outline: none;
+      background: var(--qn-surface-hover);
+    }
+
+    &:focus-visible {
+      box-shadow: inset 0 0 0 2px var(--qn-focus);
+    }
+
+    &--danger {
+      color: var(--qn-danger);
+
+      &:hover,
+      &:focus-visible {
+        background: var(--qn-danger-soft);
+      }
+    }
+
+    @media (pointer: coarse) {
+      min-height: $touch-target;
+    }
+  }
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
