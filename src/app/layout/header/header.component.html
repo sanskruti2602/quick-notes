@@ -1,0 +1,37 @@
+<header class="header">
+  <button
+    type="button"
+    class="icon-btn header__nav-toggle"
+    aria-controls="main-navigation"
+    [attr.aria-expanded]="layout.navExpanded()"
+    [qnTooltip]="navToggleLabel()"
+    tooltipPosition="bottom"
+    (click)="layout.toggleNav()"
+  >
+    <qn-icon [name]="navToggleIcon()" [size]="20" />
+  </button>
+
+  <a class="header__brand" routerLink="/notes" aria-label="Quick Notes home">
+    <span class="header__brand-mark"><qn-icon name="logo" [size]="18" /></span>
+  </a>
+
+  <div class="header__search">
+    <qn-note-search />
+  </div>
+
+  <div class="header__actions">
+    <button
+      type="button"
+      class="icon-btn"
+      [qnTooltip]="themeLabel()"
+      tooltipPosition="bottom"
+      (click)="theme.toggle()"
+    >
+      <qn-icon [name]="theme.resolved() === 'dark' ? 'sun' : 'moon'" [size]="20" />
+    </button>
+    <a class="btn btn--primary header__new" routerLink="/notes/new">
+      <qn-icon name="plus" [size]="18" />
+      <span class="header__new-label">New note</span>
+    </a>
+  </div>
+</header>

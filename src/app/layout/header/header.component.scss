@@ -1,0 +1,77 @@
+@use '../../../styles/core' as *;
+
+:host {
+  position: sticky;
+  top: 0;
+  z-index: z(header);
+  display: block;
+  border-bottom: 1px solid var(--qn-border);
+  background: color-mix(in srgb, var(--qn-bg) 88%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: space(2);
+  height: $header-height;
+  padding: 0 space(3);
+
+  @include respond-above(md) {
+    gap: space(4);
+    padding: 0 space(6);
+  }
+
+  &__brand {
+    display: inline-flex;
+    border-radius: radius(md);
+
+    @include respond-above(md) {
+      display: none;
+    }
+  }
+
+  &__brand-mark {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: radius(md);
+    background: var(--qn-accent);
+    color: var(--qn-accent-contrast);
+  }
+
+  &__search {
+    flex: 1;
+    min-width: 0;
+    max-width: 640px;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: space(1);
+    margin-left: auto;
+
+    @include respond-above(md) {
+      gap: space(2);
+    }
+  }
+
+  // Icon-only "New note" on phones, labelled button from tablet up.
+  &__new {
+    width: 40px;
+    padding: 0;
+
+    @include respond-above(md) {
+      width: auto;
+      padding: 0 space(4);
+    }
+  }
+
+  &__new-label {
+    @include respond-below(md) {
+      @include visually-hidden;
+    }
+  }
+}
