@@ -1,0 +1,200 @@
+@use '../../../styles/core' as *;
+
+// Mobile first: an off-canvas drawer.
+:host {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: z(sidebar);
+  width: min(84vw, 300px);
+  border-right: 1px solid var(--qn-border);
+  background: var(--qn-surface);
+  box-shadow: var(--qn-shadow-lg);
+  transform: translateX(-100%);
+  visibility: hidden;
+  transition:
+    transform duration(slow) $easing-standard,
+    visibility 0s linear duration(slow);
+
+  // Tablet and desktop: a sticky column that can collapse to an icon rail.
+  @include respond-above(md) {
+    position: sticky;
+    top: 0;
+    z-index: auto;
+    width: $sidebar-width;
+    height: 100vh;
+    height: 100dvh;
+    background: var(--qn-surface-sunken);
+    box-shadow: none;
+    transform: none;
+    visibility: visible;
+    transition: width duration(base) $easing-standard;
+  }
+}
+
+:host(.is-open) {
+  transform: none;
+  visibility: visible;
+  transition:
+    transform duration(slow) $easing-standard,
+    visibility 0s linear 0s;
+}
+
+:host(.is-collapsed) {
+  @include respond-above(md) {
+    width: $sidebar-collapsed-width;
+  }
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: space(4);
+  height: 100%;
+  padding: space(3);
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: $header-height - 16px;
+    padding: 0 space(1);
+  }
+
+  &__logo {
+    display: inline-flex;
+    align-items: center;
+    gap: space(3);
+    min-width: 0;
+    border-radius: radius(md);
+    color: var(--qn-text);
+    text-decoration: none;
+  }
+
+  &__logo-mark {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: radius(md);
+    background: var(--qn-accent);
+    color: var(--qn-accent-contrast);
+  }
+
+  &__logo-text {
+    @include truncate;
+    font-size: font-size(lg);
+    font-weight: font-weight(bold);
+    letter-spacing: -0.02em;
+  }
+
+  &__list {
+    display: grid;
+    gap: 2px;
+  }
+
+  &__section {
+    display: grid;
+    gap: space(2);
+  }
+
+  &__heading {
+    padding: 0 space(3);
+    color: var(--qn-text-subtle);
+    font-size: font-size(xs);
+    font-weight: font-weight(bold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  &__link {
+    @include transition(background-color, color);
+    display: flex;
+    align-items: center;
+    gap: space(3);
+    min-height: 40px;
+    padding: 0 space(3);
+    border-radius: radius(md);
+    color: var(--qn-text-muted);
+    font-size: font-size(sm);
+    font-weight: font-weight(medium);
+    text-decoration: none;
+
+    @media (pointer: coarse) {
+      min-height: $touch-target;
+    }
+
+    &:hover {
+      background: var(--qn-surface-hover);
+      color: var(--qn-text);
+    }
+
+    &.is-active {
+      background: var(--qn-accent-soft);
+      color: var(--qn-accent-soft-text);
+      font-weight: font-weight(semibold);
+
+      .sidebar__count {
+        background: var(--qn-surface);
+        color: var(--qn-accent-soft-text);
+      }
+    }
+
+    &--tag {
+      min-height: 34px;
+    }
+
+    &--more {
+      color: var(--qn-text-subtle);
+      font-size: font-size(xs);
+    }
+  }
+
+  &__label {
+    @include truncate;
+    flex: 1;
+  }
+
+  &__count {
+    margin-left: auto;
+
+    &--plain {
+      color: var(--qn-text-subtle);
+      font-size: font-size(xs);
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
+  &__footer {
+    margin-top: auto;
+    padding-top: space(3);
+    border-top: 1px solid var(--qn-border);
+  }
+}
+
+// Collapsed icon rail: labels stay available to assistive technology.
+:host(.is-collapsed) {
+  .sidebar {
+    align-items: center;
+    padding-inline: space(2);
+  }
+
+  .sidebar__brand {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .sidebar__logo-text,
+  .sidebar__label,
+  .sidebar__count {
+    @include visually-hidden;
+  }
+
+  .sidebar__link {
+    justify-content: center;
+    width: 48px;
+    padding: 0;
+  }
+}

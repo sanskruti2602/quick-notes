@@ -1,0 +1,86 @@
+<nav class="sidebar" aria-label="Main navigation" id="main-navigation">
+  <div class="sidebar__brand">
+    <a class="sidebar__logo" routerLink="/notes" aria-label="Quick Notes home">
+      <span class="sidebar__logo-mark"><qn-icon name="logo" [size]="20" /></span>
+      <span class="sidebar__logo-text">Quick Notes</span>
+    </a>
+    @if (layout.isMobile()) {
+      <button
+        #closeButton
+        type="button"
+        class="icon-btn"
+        aria-label="Close navigation"
+        (click)="layout.closeMobileNav()"
+      >
+        <qn-icon name="close" [size]="20" />
+      </button>
+    }
+  </div>
+
+  <ul class="sidebar__list" role="list">
+    @for (item of primaryItems(); track item.path) {
+      <li>
+        <a
+          class="sidebar__link"
+          [routerLink]="item.path"
+          routerLinkActive="is-active"
+          ariaCurrentWhenActive="page"
+          [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+          [qnTooltip]="item.label"
+          tooltipPosition="right"
+          [tooltipDisabled]="!collapsed()"
+          tooltipLabel=""
+        >
+          <qn-icon [name]="item.icon" [size]="18" />
+          <span class="sidebar__label">{{ item.label }}</span>
+          @if (item.count !== undefined && item.count > 0) {
+            <span class="badge sidebar__count">{{ item.count }}<span class="sr-only"> notes</span></span>
+          }
+        </a>
+      </li>
+    }
+  </ul>
+
+  @if (tags().length > 0 && !collapsed()) {
+    <div class="sidebar__section">
+      <h2 class="sidebar__heading" id="sidebar-tags-heading">Tags</h2>
+      <ul class="sidebar__list" role="list" aria-labelledby="sidebar-tags-heading">
+        @for (tag of tags(); track tag.name) {
+          <li>
+            <a
+              class="sidebar__link sidebar__link--tag"
+              [routerLink]="['/tags', tag.name]"
+              routerLinkActive="is-active"
+              ariaCurrentWhenActive="page"
+            >
+              <qn-icon name="tag" [size]="16" />
+              <span class="sidebar__label">{{ tag.name }}</span>
+              <span class="sidebar__count sidebar__count--plain">{{ tag.count }}</span>
+            </a>
+          </li>
+        }
+        @if (moreTags() > 0) {
+          <li>
+            <a class="sidebar__link sidebar__link--more" routerLink="/tags">+{{ moreTags() }} more tags</a>
+          </li>
+        }
+      </ul>
+    </div>
+  }
+
+  <div class="sidebar__footer">
+    <a
+      class="sidebar__link"
+      routerLink="/settings"
+      routerLinkActive="is-active"
+      ariaCurrentWhenActive="page"
+      qnTooltip="Settings"
+      tooltipPosition="right"
+      [tooltipDisabled]="!collapsed()"
+      tooltipLabel=""
+    >
+      <qn-icon name="settings" [size]="18" />
+      <span class="sidebar__label">Settings</span>
+    </a>
+  </div>
+</nav>
