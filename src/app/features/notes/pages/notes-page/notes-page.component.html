@@ -1,0 +1,61 @@
+<section class="page" aria-labelledby="page-title">
+  <header class="page__header">
+    <div class="page__heading">
+      <h1 id="page-title" class="page__title">{{ heading() }}</h1>
+      <p class="page__description">{{ copy().description }}</p>
+    </div>
+    <div class="page__actions">
+      @if (isTrash()) {
+        <button type="button" class="btn btn--danger-ghost" [disabled]="viewTotal() === 0" (click)="emptyTrash()">
+          <qn-icon name="trash" [size]="16" />
+          Empty Trash
+        </button>
+      } @else if (view() !== 'archived') {
+        <a class="btn btn--primary page__new" routerLink="/notes/new" [queryParams]="createLinkQuery()">
+          <qn-icon name="plus" [size]="16" />
+          New note
+        </a>
+      }
+    </div>
+  </header>
+
+  @if (viewTotal() > 0) {
+    <qn-note-filters
+      [tags]="state.tags()"
+      [showTagFilter]="showTagFilter()"
+      [showPinnedFilter]="showPinnedFilter()"
+      [hasActiveFilters]="hasActiveFilters()"
+      [(selectedTag)]="selectedTag"
+      [(pinnedOnly)]="pinnedOnly"
+      [sort]="sort()"
+      (sortChange)="onSortChange($event)"
+      [layout]="layout()"
+      (layoutChange)="onLayoutChange($event)"
+      (clearFilters)="clearFilters()"
+    />
+    <p class="page__summary" role="status" aria-live="polite">{{ resultSummary() }}</p>
+  }
+
+  @if (viewTotal() === 0) {
+    <qn-empty-state [icon]="copy().emptyIcon" [heading]="copy().emptyHeading" [message]="copy().emptyMessage">
+      @if (view() === 'all' || view() === 'tag') {
+        <a class="btn btn--primary" routerLink="/notes/new" [queryParams]="createLinkQuery()">
+          <qn-icon name="plus" [size]="16" />
+          Create a note
+        </a>
+      } @else if (view() !== 'trash') {
+        <a class="btn" routerLink="/notes">Go to all notes</a>
+      }
+    </qn-empty-state>
+  } @else if (results().length === 0) {
+    <qn-empty-state
+      icon="search-x"
+      heading="No matching notes"
+      [message]="noResultsMessage()"
+    >
+      <button type="button" class="btn" (click)="clearFilters()">Clear search and filters</button>
+    </qn-empty-state>
+  } @else {
+    <qn-note-list [sections]="sections()" [layout]="layout()" (command)="onCommand($event)" />
+  }
+</section>

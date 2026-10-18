@@ -1,0 +1,56 @@
+@use '../../../../../styles/core' as *;
+
+:host {
+  display: block;
+}
+
+.page {
+  display: grid;
+  gap: space(4);
+
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: space(3);
+  }
+
+  &__heading {
+    display: grid;
+    gap: space(1);
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: font-size(xl);
+    font-weight: font-weight(bold);
+    overflow-wrap: anywhere;
+
+    @include respond-above(md) {
+      font-size: font-size(2xl);
+    }
+  }
+
+  &__description {
+    color: var(--qn-text-muted);
+    font-size: font-size(sm);
+  }
+
+  &__actions {
+    display: flex;
+    gap: space(2);
+  }
+
+  // The header already has a "New note" button on larger screens.
+  &__new {
+    @include respond-above(md) {
+      display: none;
+    }
+  }
+
+  &__summary {
+    color: var(--qn-text-subtle);
+    font-size: font-size(xs);
+  }
+}
