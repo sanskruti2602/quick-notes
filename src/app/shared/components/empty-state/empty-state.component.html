@@ -1,0 +1,12 @@
+<section class="empty-state" role="status">
+  <div class="empty-state__icon">
+    <qn-icon [name]="icon()" [size]="32" [strokeWidth]="1.6" />
+  </div>
+  <h2 class="empty-state__heading">{{ heading() }}</h2>
+  @if (message()) {
+    <p class="empty-state__message">{{ message() }}</p>
+  }
+  <div class="empty-state__actions">
+    <ng-content />
+  </div>
+</section>
