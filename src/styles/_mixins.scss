@@ -1,0 +1,104 @@
+@use 'sass:list';
+@use 'sass:map';
+@use 'tokens' as *;
+
+// Mobile-first breakpoint: styles apply at `$name` and wider.
+@mixin respond-above($name) {
+  @if not map.has-key($breakpoints, $name) {
+    @error 'Unknown breakpoint `#{$name}`.';
+  }
+  @media (min-width: map.get($breakpoints, $name)) {
+    @content;
+  }
+}
+
+// Styles apply below `$name` only (use sparingly; prefer respond-above).
+@mixin respond-below($name) {
+  @if not map.has-key($breakpoints, $name) {
+    @error 'Unknown breakpoint `#{$name}`.';
+  }
+  @media (max-width: map.get($breakpoints, $name) - 0.02px) {
+    @content;
+  }
+}
+
+@mixin respond-between($from, $to) {
+  @media (min-width: map.get($breakpoints, $from)) and (max-width: map.get($breakpoints, $to) - 0.02px) {
+    @content;
+  }
+}
+
+@mixin focus-ring($offset: 2px) {
+  outline: 2px solid var(--qn-focus);
+  outline-offset: $offset;
+}
+
+@mixin focus-visible-ring($offset: 2px) {
+  &:focus-visible {
+    @include focus-ring($offset);
+  }
+}
+
+@mixin visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@mixin button-reset {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+@mixin line-clamp($lines) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $lines;
+  line-clamp: $lines;
+  overflow: hidden;
+}
+
+@mixin truncate {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@mixin surface($elevation: sm) {
+  background: var(--qn-surface);
+  border: 1px solid var(--qn-border);
+  border-radius: radius(lg);
+  box-shadow: var(--qn-shadow-#{$elevation});
+}
+
+@mixin transition($properties...) {
+  $value: ();
+  @each $property in $properties {
+    $value: list.append($value, $property duration(base) $easing-standard, comma);
+  }
+  transition: $value;
+}
+
+@mixin touch-target {
+  min-width: $touch-target;
+  min-height: $touch-target;
+}
+
+@mixin popover-surface {
+  background: var(--qn-surface-raised);
+  border: 1px solid var(--qn-border);
+  border-radius: radius(md);
+  box-shadow: var(--qn-shadow-lg);
+}

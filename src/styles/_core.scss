@@ -1,0 +1,5 @@
+// Single entry point for component stylesheets:
+//   @use '<relative path>/styles/core' as *;
+// Exposes design tokens, accessor functions and mixins. Emits no CSS by itself.
+@forward 'tokens';
+@forward 'mixins';

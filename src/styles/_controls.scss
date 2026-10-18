@@ -1,0 +1,440 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+// -----------------------------------------------------------------------------------------------
+// Reusable UI primitives shared by many components (buttons, form controls, chips, tooltips).
+// Component-specific styling stays in each component's own SCSS file.
+// -----------------------------------------------------------------------------------------------
+
+// Buttons ---------------------------------------------------------------------------------------
+
+.btn {
+  @include button-reset;
+  @include transition(background-color, border-color, color, box-shadow);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: space(2);
+  min-height: 40px;
+  padding: 0 space(4);
+  border: 1px solid var(--qn-border-strong);
+  border-radius: radius(md);
+  background: var(--qn-surface);
+  color: var(--qn-text);
+  font-size: font-size(sm);
+  font-weight: font-weight(semibold);
+  white-space: nowrap;
+  text-decoration: none;
+
+  &:hover:not(:disabled) {
+    background: var(--qn-surface-hover);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  &--primary {
+    border-color: var(--qn-accent);
+    background: var(--qn-accent);
+    color: var(--qn-accent-contrast);
+
+    &:hover:not(:disabled) {
+      border-color: var(--qn-accent-hover);
+      background: var(--qn-accent-hover);
+    }
+  }
+
+  &--danger {
+    border-color: var(--qn-danger);
+    background: var(--qn-danger);
+    color: var(--qn-danger-contrast);
+
+    &:hover:not(:disabled) {
+      border-color: var(--qn-danger-hover);
+      background: var(--qn-danger-hover);
+    }
+  }
+
+  &--ghost {
+    border-color: transparent;
+    background: transparent;
+  }
+
+  &--danger-ghost {
+    border-color: transparent;
+    background: transparent;
+    color: var(--qn-danger);
+
+    &:hover:not(:disabled) {
+      background: var(--qn-danger-soft);
+    }
+  }
+
+  &--sm {
+    min-height: 32px;
+    padding: 0 space(3);
+    font-size: font-size(xs);
+  }
+
+  @media (pointer: coarse) {
+    min-height: $touch-target;
+  }
+}
+
+.icon-btn {
+  @include button-reset;
+  @include transition(background-color, color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: radius(md);
+  color: var(--qn-text-muted);
+
+  &:hover:not(:disabled) {
+    background: var(--qn-surface-hover);
+    color: var(--qn-text);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &[aria-pressed='true'] {
+    background: var(--qn-accent-soft);
+    color: var(--qn-accent-soft-text);
+  }
+
+  &--sm {
+    width: 32px;
+    height: 32px;
+  }
+
+  @media (pointer: coarse) {
+    width: $touch-target;
+    height: $touch-target;
+  }
+}
+
+// Form fields -----------------------------------------------------------------------------------
+
+.field {
+  display: grid;
+  gap: space(1);
+
+  &__label {
+    font-size: font-size(sm);
+    font-weight: font-weight(semibold);
+    color: var(--qn-text);
+  }
+
+  &__hint {
+    font-size: font-size(xs);
+    color: var(--qn-text-subtle);
+  }
+
+  &__error {
+    display: flex;
+    align-items: center;
+    gap: space(1);
+    font-size: font-size(xs);
+    font-weight: font-weight(medium);
+    color: var(--qn-danger);
+  }
+}
+
+.input,
+.select,
+.textarea {
+  @include transition(border-color, box-shadow);
+  width: 100%;
+  min-height: 40px;
+  padding: space(2) space(3);
+  border: 1px solid var(--qn-border-strong);
+  border-radius: radius(md);
+  background: var(--qn-surface);
+  color: var(--qn-text);
+  font-size: font-size(md);
+
+  &::placeholder {
+    color: var(--qn-text-subtle);
+  }
+
+  &:hover {
+    border-color: var(--qn-text-subtle);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--qn-accent);
+    box-shadow: 0 0 0 3px var(--qn-accent-soft);
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--qn-danger);
+
+    &:focus-visible {
+      box-shadow: 0 0 0 3px var(--qn-danger-soft);
+    }
+  }
+
+  &:disabled,
+  &[readonly] {
+    background: var(--qn-surface-sunken);
+  }
+}
+
+.select {
+  appearance: none;
+  padding-right: space(8);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--qn-text-muted) 50%),
+    linear-gradient(135deg, var(--qn-text-muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) 55%,
+    calc(100% - 13px) 55%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.textarea {
+  resize: vertical;
+  line-height: line-height(relaxed);
+}
+
+// Toggle switch built on a native checkbox (keeps keyboard + screen reader semantics).
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: space(3);
+  cursor: pointer;
+  font-size: font-size(sm);
+  font-weight: font-weight(medium);
+
+  input {
+    @include transition(background-color);
+    appearance: none;
+    position: relative;
+    flex-shrink: 0;
+    width: 40px;
+    height: 24px;
+    margin: 0;
+    border-radius: radius(pill);
+    background: var(--qn-border-strong);
+    cursor: inherit;
+
+    &::after {
+      @include transition(transform);
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: var(--qn-shadow-sm);
+    }
+
+    &:checked {
+      background: var(--qn-accent);
+
+      &::after {
+        transform: translateX(16px);
+      }
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    &:focus-visible {
+      @include focus-ring;
+    }
+  }
+}
+
+// Chips and badges ------------------------------------------------------------------------------
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: space(1);
+  max-width: 100%;
+  min-height: 24px;
+  padding: 0 space(2);
+  border-radius: radius(pill);
+  background: var(--qn-surface-sunken);
+  color: var(--qn-text-muted);
+  font-size: font-size(xs);
+  font-weight: font-weight(medium);
+  line-height: 1;
+
+  &__label {
+    @include truncate;
+  }
+
+  &--accent {
+    background: var(--qn-accent-soft);
+    color: var(--qn-accent-soft-text);
+  }
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 20px;
+  padding: 0 space(2);
+  border-radius: radius(pill);
+  background: var(--qn-surface-sunken);
+  color: var(--qn-text-muted);
+  font-size: font-size(xs);
+  font-weight: font-weight(semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+// Segmented control built on native radio inputs.
+.segmented {
+  display: inline-flex;
+  padding: 2px;
+  border: 1px solid var(--qn-border);
+  border-radius: radius(md);
+  background: var(--qn-surface-sunken);
+
+  label {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: space(2);
+    min-height: 34px;
+    padding: 0 space(3);
+    border-radius: calc(#{radius(md)} - 2px);
+    color: var(--qn-text-muted);
+    font-size: font-size(sm);
+    font-weight: font-weight(medium);
+    cursor: pointer;
+
+    &:has(input:checked) {
+      background: var(--qn-surface);
+      color: var(--qn-text);
+      box-shadow: var(--qn-shadow-sm);
+    }
+
+    &:has(input:focus-visible) {
+      @include focus-ring(0);
+    }
+  }
+
+  input {
+    @include visually-hidden;
+  }
+}
+
+// Inline status banner (storage warnings, read-only notices).
+.banner {
+  display: flex;
+  align-items: flex-start;
+  gap: space(3);
+  padding: space(3) space(4);
+  border: 1px solid var(--qn-border);
+  border-radius: radius(md);
+  background: var(--qn-surface-sunken);
+  color: var(--qn-text);
+  font-size: font-size(sm);
+
+  &--warning {
+    border-color: color-mix(in srgb, var(--qn-warning) 45%, transparent);
+    background: color-mix(in srgb, var(--qn-warning) 12%, var(--qn-surface));
+  }
+
+  &--danger {
+    border-color: color-mix(in srgb, var(--qn-danger) 45%, transparent);
+    background: var(--qn-danger-soft);
+  }
+
+  &__body {
+    flex: 1;
+    display: grid;
+    gap: space(1);
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: space(2);
+  }
+}
+
+// Accessible tooltip: the visible bubble is decorative; the control's aria-label carries the
+// accessible name. Shown on hover and keyboard focus. Set via `qnTooltip`.
+[data-tooltip] {
+  position: relative;
+
+  &::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 6px);
+    z-index: z(menu);
+    padding: space(1) space(2);
+    border-radius: radius(sm);
+    background: var(--qn-text);
+    color: var(--qn-bg);
+    font-size: font-size(xs);
+    font-weight: font-weight(medium);
+    line-height: line-height(tight);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, 4px);
+    transition:
+      opacity duration(fast) $easing-standard,
+      transform duration(fast) $easing-standard;
+  }
+
+  &:hover::after,
+  &:focus-visible::after {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    transition-delay: 350ms;
+  }
+
+  &:focus-visible::after {
+    transition-delay: 0ms;
+  }
+
+  @media (hover: none) {
+    &:hover::after {
+      opacity: 0;
+    }
+  }
+}
+
+[data-tooltip-position='right']::after {
+  left: calc(100% + 8px);
+  bottom: 50%;
+  transform: translate(-4px, 50%);
+}
+
+[data-tooltip-position='right']:hover::after,
+[data-tooltip-position='right']:focus-visible::after {
+  transform: translate(0, 50%);
+}
+
+[data-tooltip-position='bottom']::after {
+  top: calc(100% + 6px);
+  bottom: auto;
+  transform: translate(-50%, -4px);
+}
+
+[data-tooltip-position='bottom']:hover::after,
+[data-tooltip-position='bottom']:focus-visible::after {
+  transform: translate(-50%, 0);
+}

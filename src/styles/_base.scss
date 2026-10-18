@@ -1,0 +1,121 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+// Minimal reset + base typography.
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--qn-bg);
+  color: var(--qn-text);
+  font-family: $font-family-sans;
+  font-size: font-size(md);
+  line-height: line-height(normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  line-height: line-height(tight);
+  letter-spacing: -0.01em;
+}
+
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: var(--qn-accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+:focus-visible {
+  @include focus-ring;
+}
+
+::selection {
+  background: var(--qn-accent-soft);
+  color: var(--qn-text);
+}
+
+// Respect reduced-motion preferences everywhere.
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.sr-only {
+  @include visually-hidden;
+}
+
+.skip-link {
+  position: absolute;
+  top: space(2);
+  left: space(2);
+  z-index: z(toast);
+  padding: space(2) space(4);
+  border-radius: radius(md);
+  background: var(--qn-accent);
+  color: var(--qn-accent-contrast);
+  font-weight: font-weight(semibold);
+  text-decoration: none;
+  transform: translateY(-200%);
+
+  &:focus {
+    transform: none;
+  }
+}

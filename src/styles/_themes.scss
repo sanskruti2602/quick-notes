@@ -1,0 +1,121 @@
+@use 'sass:map';
+
+// -----------------------------------------------------------------------------------------------
+// Runtime themes. Each theme is a Sass map compiled into CSS custom properties under
+// `[data-theme]`, so `ThemeService` can switch themes instantly without reloading stylesheets.
+// -----------------------------------------------------------------------------------------------
+
+$themes: (
+  light: (
+    bg: #f6f4ef,
+    surface: #ffffff,
+    surface-raised: #ffffff,
+    surface-sunken: #efece5,
+    surface-hover: #f1eee8,
+    border: #e2ded4,
+    border-strong: #c9c3b6,
+    text: #1c1b18,
+    text-muted: #5c584f,
+    text-subtle: #6f6a60,
+    accent: #0f766e,
+    accent-hover: #0b5f58,
+    accent-contrast: #ffffff,
+    accent-soft: #dcefec,
+    accent-soft-text: #0b5048,
+    danger: #b42318,
+    danger-hover: #912018,
+    danger-soft: #fdecea,
+    danger-contrast: #ffffff,
+    success: #1a7f37,
+    warning: #9a6700,
+    info: #0b5cad,
+    focus: #0f766e,
+    overlay: rgba(28, 27, 24, 0.45),
+    shadow-sm: (0 1px 2px rgba(28, 27, 24, 0.06)),
+    shadow-md: (0 4px 14px rgba(28, 27, 24, 0.08)),
+    shadow-lg: (0 12px 32px rgba(28, 27, 24, 0.16)),
+  ),
+  dark: (
+    bg: #121311,
+    surface: #1b1c1a,
+    surface-raised: #232421,
+    surface-sunken: #161715,
+    surface-hover: #262724,
+    border: #2f302c,
+    border-strong: #45463f,
+    text: #ecebe6,
+    text-muted: #b0aea5,
+    text-subtle: #9a978e,
+    accent: #2dd4bf,
+    accent-hover: #5eead4,
+    accent-contrast: #062a26,
+    accent-soft: #123a35,
+    accent-soft-text: #99f6e4,
+    danger: #f97066,
+    danger-hover: #fda29b,
+    danger-soft: #3b1a17,
+    danger-contrast: #2b0d0a,
+    success: #4ade80,
+    warning: #fbbf24,
+    info: #60a5fa,
+    focus: #5eead4,
+    overlay: rgba(0, 0, 0, 0.6),
+    shadow-sm: (0 1px 2px rgba(0, 0, 0, 0.4)),
+    shadow-md: (0 4px 14px rgba(0, 0, 0, 0.35)),
+    shadow-lg: (0 12px 32px rgba(0, 0, 0, 0.55)),
+  ),
+);
+
+// Note label colours: `bg` tints the card, `border` outlines it, `dot` is the swatch colour.
+$note-colors: (
+  light: (
+    'red': (bg: #fdeceb, border: #f2b8b1, dot: #e5484d),
+    'orange': (bg: #fef0e1, border: #f5c99a, dot: #f76b15),
+    'yellow': (bg: #fdf6d6, border: #e9d27a, dot: #d4a40a),
+    'green': (bg: #e8f5e6, border: #a9d4a2, dot: #30a46c),
+    'teal': (bg: #e0f3f0, border: #93d3c9, dot: #12a594),
+    'blue': (bg: #e5effc, border: #a5c4ef, dot: #3e63dd),
+    'purple': (bg: #f0e9fb, border: #c9b3ee, dot: #8e4ec6),
+    'pink': (bg: #fce9f2, border: #f0b0cf, dot: #d6409f),
+  ),
+  dark: (
+    'red': (bg: #2f1c1b, border: #6e3631, dot: #ff6369),
+    'orange': (bg: #30241a, border: #74512a, dot: #ff8b3e),
+    'yellow': (bg: #2e2a17, border: #6d6026, dot: #f5d90a),
+    'green': (bg: #1b2b1d, border: #3b663e, dot: #3dd68c),
+    'teal': (bg: #162b29, border: #2c625b, dot: #0ac5b3),
+    'blue': (bg: #1a2436, border: #34527c, dot: #7b9bff),
+    'purple': (bg: #251f37, border: #574683, dot: #bf7af0),
+    'pink': (bg: #311b28, border: #743858, dot: #f76fbf),
+  ),
+);
+
+@mixin theme-variables($name) {
+  $theme: map.get($themes, $name);
+  @each $token, $value in $theme {
+    --qn-#{$token}: #{$value};
+  }
+  @each $color, $values in map.get($note-colors, $name) {
+    @each $part, $value in $values {
+      --qn-note-#{$color}-#{$part}: #{$value};
+    }
+  }
+}
+
+@mixin emit-themes {
+  :root,
+  :root[data-theme='light'] {
+    @include theme-variables(light);
+  }
+
+  // Before Angular boots, follow the OS preference to avoid a flash of the wrong theme.
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+      @include theme-variables(dark);
+    }
+  }
+
+  :root[data-theme='dark'] {
+    @include theme-variables(dark);
+  }
+}
