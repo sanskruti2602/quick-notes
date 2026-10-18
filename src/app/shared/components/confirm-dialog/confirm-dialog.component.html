@@ -1,0 +1,37 @@
+<dialog
+  #dialog
+  class="dialog"
+  aria-labelledby="confirm-dialog-title"
+  aria-describedby="confirm-dialog-message"
+  (cancel)="onCancel($event)"
+  (close)="onClose()"
+  (click)="onDialogClick($event)"
+>
+  @if (request(); as current) {
+    <div class="dialog__panel">
+      <div class="dialog__header">
+        @if (current.options.tone === 'danger') {
+          <span class="dialog__icon dialog__icon--danger">
+            <qn-icon name="warning" [size]="20" />
+          </span>
+        }
+        <h2 id="confirm-dialog-title" class="dialog__title">{{ current.options.title }}</h2>
+      </div>
+      <p id="confirm-dialog-message" class="dialog__message">{{ current.options.message }}</p>
+      <div class="dialog__actions">
+        <button #cancelButton type="button" class="btn" (click)="answer(false)">
+          {{ current.options.cancelLabel }}
+        </button>
+        <button
+          type="button"
+          class="btn"
+          [class.btn--danger]="current.options.tone === 'danger'"
+          [class.btn--primary]="current.options.tone !== 'danger'"
+          (click)="answer(true)"
+        >
+          {{ current.options.confirmLabel }}
+        </button>
+      </div>
+    </div>
+  }
+</dialog>

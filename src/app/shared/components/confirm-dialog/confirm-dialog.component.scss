@@ -1,0 +1,75 @@
+@use '../../../../styles/core' as *;
+
+.dialog {
+  width: min(440px, calc(100vw - #{space(8)}));
+  padding: 0;
+  border: 1px solid var(--qn-border);
+  border-radius: radius(xl);
+  background: var(--qn-surface-raised);
+  color: var(--qn-text);
+  box-shadow: var(--qn-shadow-lg);
+
+  &::backdrop {
+    background: var(--qn-overlay);
+  }
+
+  &[open] {
+    animation: dialog-in duration(base) $easing-standard;
+  }
+
+  &__panel {
+    display: grid;
+    gap: space(4);
+    padding: space(6);
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: space(3);
+  }
+
+  &__icon {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+
+    &--danger {
+      background: var(--qn-danger-soft);
+      color: var(--qn-danger);
+    }
+  }
+
+  &__title {
+    font-size: font-size(lg);
+    font-weight: font-weight(semibold);
+  }
+
+  &__message {
+    color: var(--qn-text-muted);
+    font-size: font-size(sm);
+    line-height: line-height(relaxed);
+    overflow-wrap: anywhere;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: space(2);
+  }
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
