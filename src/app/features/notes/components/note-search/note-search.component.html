@@ -1,0 +1,25 @@
+<form class="search" role="search" (submit)="$event.preventDefault()">
+  <label for="note-search-input" class="sr-only">Search notes</label>
+  <qn-icon class="search__icon" name="search" [size]="18" />
+  <input
+    #searchInput
+    id="note-search-input"
+    class="search__input"
+    type="search"
+    autocomplete="off"
+    spellcheck="false"
+    placeholder="Search notes"
+    aria-describedby="note-search-hint"
+    [value]="query.search()"
+    (input)="onInput($event)"
+    (keydown)="onKeydown($event)"
+  />
+  <span id="note-search-hint" class="sr-only">Searches titles, content and tags. Press slash to focus, Escape to clear.</span>
+  @if (query.hasSearch()) {
+    <button type="button" class="icon-btn icon-btn--sm search__clear" aria-label="Clear search" (click)="clear()">
+      <qn-icon name="close" [size]="16" />
+    </button>
+  } @else {
+    <kbd class="search__kbd" aria-hidden="true">/</kbd>
+  }
+</form>

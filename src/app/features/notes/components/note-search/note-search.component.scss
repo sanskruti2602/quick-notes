@@ -1,0 +1,72 @@
+@use '../../../../../styles/core' as *;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.search {
+  @include transition(border-color, box-shadow, background-color);
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 42px;
+  border: 1px solid var(--qn-border);
+  border-radius: radius(pill);
+  background: var(--qn-surface-sunken);
+
+  &:focus-within {
+    border-color: var(--qn-accent);
+    background: var(--qn-surface);
+    box-shadow: 0 0 0 3px var(--qn-accent-soft);
+  }
+
+  &__icon {
+    position: absolute;
+    left: space(3);
+    color: var(--qn-text-subtle);
+    pointer-events: none;
+  }
+
+  &__input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: 0 space(2) 0 space(10);
+    border: 0;
+    background: transparent;
+    font-size: font-size(md);
+
+    &::placeholder {
+      color: var(--qn-text-subtle);
+    }
+
+    &:focus-visible {
+      outline: none;
+    }
+
+    // Use our own clear button instead of the browser one.
+    &::-webkit-search-cancel-button {
+      appearance: none;
+    }
+  }
+
+  &__clear {
+    margin-right: space(1);
+  }
+
+  &__kbd {
+    display: none;
+    margin-right: space(3);
+    padding: 0 space(2);
+    border: 1px solid var(--qn-border-strong);
+    border-radius: radius(sm);
+    color: var(--qn-text-subtle);
+    font-family: $font-family-mono;
+    font-size: font-size(xs);
+
+    @include respond-above(lg) {
+      display: inline-block;
+    }
+  }
+}
