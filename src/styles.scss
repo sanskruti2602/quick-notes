@@ -1,0 +1,6 @@
+// Global stylesheet. Component-specific styles live next to each component in its own .scss file.
+@use 'styles/themes';
+@use 'styles/base';
+@use 'styles/controls';
+
+@include themes.emit-themes;
